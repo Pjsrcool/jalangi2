@@ -1,11 +1,13 @@
 import codecs
 import hashlib
 import os
+from re import sub
 import sys
 import inspect
 import traceback
 import sj
 import typing
+import subprocess
 
 from mitmproxy import http
 from mitmproxy import ctx
@@ -63,9 +65,18 @@ def processFile (flow, content, ext):
         if not os.path.exists('cache/' + flow.request.host + '/' + hash):
             os.makedirs('cache/' + flow.request.host + '/' + hash)
         if not useCache or not os.path.isfile(instrumentedFileName):
+
             print('Instrumenting: ' + fileName + ' from ' + url)
             with open(fileName, 'w') as file:
                 file.write(content)
+
+            if fileName[len(fileName) - 3 :] == ".js" or fileName[len(fileName) - 4 :] == ".jsx":
+                print("*** Running Babel", fileName)
+                babel_command = "babel " + fileName + " --out-file " + fileName
+                # ret = os.system(babel_command)
+                ret = subprocess.check_output(babel_command, shell=True)
+                print("** Babel Done:", ret, fileName)
+
             sub_env = { 'JALANGI_URL': url }
             sj.execute(sj.INSTRUMENTATION_SCRIPT + ' ' + jalangiArgs + ' ' + fileName + ' --out ' + instrumentedFileName + ' --outDir ' + os.path.dirname(instrumentedFileName), None, sub_env)
         else:
@@ -109,6 +120,9 @@ def response(flow):
         if content_type:
             #print("here", content_type)     
             if content_type.find('javascript') >= 0:
+                # here, maybe try to convert to es5 before saving a file
+                # babel_cmd = "babel "
+                # result = subprocess.check_output()
                 flow.response.text = processFile(flow, flow.response.text, 'js')
             if content_type.find('html') >= 0:
                 flow.response.text = processFile(flow, flow.response.text, 'html')
