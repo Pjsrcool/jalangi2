@@ -73,7 +73,7 @@ def processFile (flow, content, ext):
             # if js, then run babel to convert to es5
             if fileName[len(fileName) - 3 :] == ".js" or fileName[len(fileName) - 4 :] == ".jsx":
                 print("*** Running Babel", fileName)
-                babel_command = "babel " + fileName + " --out-file " + fileName
+                babel_command = "./node_modules/.bin/babel " + fileName + " --out-file " + fileName
                 # ret = os.system(babel_command)
                 ret = subprocess.check_output(babel_command, shell=True)
                 print("** Babel Done:", ret, fileName)
