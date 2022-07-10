@@ -70,6 +70,7 @@ def processFile (flow, content, ext):
             with open(fileName, 'w') as file:
                 file.write(content)
 
+            # if js, then run babel to convert to es5
             if fileName[len(fileName) - 3 :] == ".js" or fileName[len(fileName) - 4 :] == ".jsx":
                 print("*** Running Babel", fileName)
                 babel_command = "babel " + fileName + " --out-file " + fileName
