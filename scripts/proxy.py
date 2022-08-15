@@ -80,6 +80,7 @@ def processFile (flow, content, ext):
 
             sub_env = { 'JALANGI_URL': url }
             sj.execute(sj.INSTRUMENTATION_SCRIPT + ' ' + jalangiArgs + ' ' + fileName + ' --out ' + instrumentedFileName + ' --outDir ' + os.path.dirname(instrumentedFileName), None, sub_env)
+            # print("Instrumentation done\n")       
         else:
             print('Already instrumented: ' + fileName + ' from ' + url)
         with open (instrumentedFileName, 'r') as file:
