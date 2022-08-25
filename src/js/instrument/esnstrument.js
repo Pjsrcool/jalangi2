@@ -996,18 +996,18 @@ if (typeof J$ === 'undefined') {
 
     function syncDefuns(node, scope, isScript) {
         var ret = [], ident;
-        // if (!isScript) {
-        //     if (!Config.INSTR_TRY_CATCH_ARGUMENTS || Config.INSTR_TRY_CATCH_ARGUMENTS(node)) {
-        //         if (!Config.INSTR_INIT || Config.INSTR_INIT(node)) {
-        //             ident = createIdentifierAst("arguments");
-        //             ret = ret.concat(createCallInitAsStatement(node,
-        //                 createLiteralAst("arguments"),
-        //                 ident,
-        //                 true,
-        //                 ident, false, true));
-        //         }
-        //     }
-        // }
+        if (!isScript) {
+            if (!Config.INSTR_TRY_CATCH_ARGUMENTS || Config.INSTR_TRY_CATCH_ARGUMENTS(node)) {
+                if (!Config.INSTR_INIT || Config.INSTR_INIT(node)) {
+                    ident = createIdentifierAst("arguments");
+                    ret = ret.concat(createCallInitAsStatement(node,
+                        createLiteralAst("arguments"),
+                        ident,
+                        true,
+                        ident, false, true));
+                }
+            }
+        }
         if (scope) {
                 for (var name in scope.vars) {
                     if (HOP(scope.vars, name)) {
